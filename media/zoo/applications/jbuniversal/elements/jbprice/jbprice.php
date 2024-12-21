@@ -946,7 +946,7 @@ abstract class ElementJBPrice extends Element implements iSubmittable
         $variant = $this->getList()->current();
 
         if ($variant->has('_value')) {
-            return $variant->getValue(false, '_value')->cur();
+            return $variant->getValue(false, '_value')?->cur();
         }
 
         return $default;
