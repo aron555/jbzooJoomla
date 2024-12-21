@@ -1,0 +1,156 @@
+<?php
+/**
+ * JBZoo App is universal Joomla CCK, application for YooTheme Zoo component
+ * @package     jbzoo
+ * @version     2.x Pro
+ * @author      JBZoo App http://jbzoo.com
+ * @copyright   Copyright (C) JBZoo.com,  All rights reserved.
+ * @coder       Denis Smetannikov <denis@jbzoo.com>
+ */
+
+// no direct access
+defined('_JEXEC') or die('Restricted access');
+
+
+/**
+ * Class JBModelModelCategorySearch
+ */
+class JBModelModelCategorySearch extends JBModel
+{
+
+    const LIMIT_CATEGORIES = 200;
+    const LIMIT_ITEMS      = 3000;
+
+    /**
+     * Create and return self instance
+     * @return JBModelModelCategorySearch
+     */
+    public static function model()
+    {
+        return new self();
+    }
+
+    /**
+     * @param $text
+     * @param $phrase
+     * @param $curCat
+     * @return mixed
+     */
+    public function loadCategories($text, $phrase, $curCat)
+    {
+        $select = $this->_getSelect()
+            ->select('DISTINCT tCategory.id')
+            ->from(ZOO_TABLE_ITEM, 'tItem')
+            ->leftJoin(ZOO_TABLE_CATEGORY_ITEM . ' AS tCategoryItem ON tItem.id = tCategoryItem.item_id')
+            ->leftJoin(ZOO_TABLE_CATEGORY . ' AS tCategory ON tCategoryItem.category_id = tCategory.id')
+            ->limit(self::LIMIT_CATEGORIES);
+
+        if ($curCat) {
+            $select->where('tCategory.id = ?', $curCat);
+        } else {
+            $select->where('tCategory.id > ?', 0);
+        }
+
+        $this->_addConditions($text, $phrase, $select);
+
+        return $this->fetchList($select);
+    }
+
+    /**
+     * @param $text
+     * @param $phrase
+     * @param $curCat
+     * @return mixed
+     */
+    public function loadItems($text, $phrase, $curCat)
+    {
+        $select = $this->_getSelect()
+            ->select(array('DISTINCT tItem.id', 'tCategoryItem.category_id'))
+            ->from(ZOO_TABLE_ITEM, 'tItem')
+            ->leftJoin(ZOO_TABLE_CATEGORY_ITEM . ' AS tCategoryItem ON tItem.id = tCategoryItem.item_id')
+            ->limit(self::LIMIT_ITEMS);
+
+        if ($curCat) {
+            $select->where('tCategoryItem.category_id = ?', $curCat);
+        }
+
+        $this->_addConditions($text, $phrase, $select);
+
+        return $this->fetchAll($select);
+    }
+
+    /**
+     * @param string          $text
+     * @param string          $phrase
+     * @param JBDatabaseQuery $select
+     * @return array
+     */
+    protected function _addConditions($text, $phrase, $select)
+    {
+        $wheres = array();
+
+        $words = explode(' ', $text);
+        foreach ($words as $word) {
+            $word = $this->_db->Quote('%' . $this->_db->escape($word, true) . '%', false);
+
+            $like = array(
+                'tItem.name LIKE ' . $word,
+
+                'EXISTS (SELECT value FROM ' . ZOO_TABLE_SEARCH
+                . ' WHERE tItem.id = item_id AND value LIKE ' . $word . ' AND ' . $this->_getAccessExclude() . ')',
+
+                'EXISTS (SELECT name FROM ' . ZOO_TABLE_TAG . ' WHERE tItem.id = item_id AND name LIKE ' . $word . ')',
+            );
+
+            $wheres[] = implode(' OR ', $like);
+        }
+
+        $where = '(' . implode(($phrase == 'all' ? ') AND (' : ') OR ('), $wheres) . ')';
+
+        $select
+            ->where('(' . $where . ')')
+            ->where('tItem.' . $this->app->user->getDBAccessString())
+            ->where('tItem.state = ?', 1)
+            ->where('(tItem.publish_up = ' . $this->_dbNull . ' OR tItem.publish_up <= ' . $this->_dbNow . ')')
+            ->where('(tItem.publish_down = ' . $this->_dbNull . ' OR tItem.publish_down >= ' . $this->_dbNow . ')');
+    }
+
+    /**
+     * @return string
+     */
+    protected function _getAccessExclude()
+    {
+        $elements = array();
+
+        /** @var Application $application */
+        foreach ($this->app->application->groups() as $application) {
+
+            /** @var Type $type */
+            foreach ($application->getTypes() as $type) {
+
+                /** @var Element $element */
+                foreach ($type->getElements() as $element) {
+                    if (!$element->canAccess()) {
+                        $elements[] = $this->_db->Quote($element->identifier);
+                    }
+                }
+            }
+        }
+
+        $access = $elements ? 'NOT element_id in (' . implode(',', $elements) . ')' : '1';
+
+        return $access;
+    }
+
+    /**
+     * @param $idList
+     * @return array
+     */
+    public function createItems($idList)
+    {
+        $items = $this->getZooItemsByIds($idList);
+        $items = $this->app->jbarray->sortByArray($items, $idList);
+        return $items;
+    }
+
+}

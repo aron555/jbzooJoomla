@@ -1,0 +1,12 @@
+/* Copyright (C) YOOtheme GmbH, https://www.gnu.org/licenses/gpl.html GNU/GPL */
+
+function selectRelateditem(e,a,l){jQuery("#"+l).ElementRelatedItems("addItem",e,a),window.bootstrap?Joomla.Modal.current.close():jModalClose()}(function(e){var a=function(){};e.extend(a.prototype,{name:"ElementRelatedItems",options:{variable:null,msgDeleteItem:"Delete Item",msgSortItem:"Sort Item"},initialize:function(o,t){this.options=e.extend({},this.options,t),this.list=o.find("ul").on("click","span.item-delete",function(){e(this).closest("li").fadeOut(200,function(){e(this).remove()})}).sortable({handle:"span.item-sort",placeholder:"dragging",axis:"y",opacity:1,delay:100,tolerance:"pointer",containment:"parent",forcePlaceholderSize:!0,scroll:!1,start:function(i,n){n.helper.addClass("ghost")},stop:function(i,n){n.item.removeClass("ghost")}}),window.bootstrap&&o.on("click",".item-add",function(i){i.preventDefault(),l(i.currentTarget.href)})},addItem:function(o,t){var i=!1;this.list.find("li input").each(function(){e(this).val()==o&&(i=!0)}),i||e('<li><div><div class="uk-display-inline-block uk-text-middle item-name">'+t+'</div><span class="item-sort" title="'+this.options.msgSortItem+'"><span class="uk-icon" uk-icon="icon: more-vertical"></span></span><span class="item-delete" title="'+this.options.msgDeleteItem+'"><span class="uk-icon" uk-icon="icon: trash"></span></span><input type="hidden" name="'+this.options.variable+'" value="'+o+'"/></div></li>').appendTo(this.list)}});function l(o){var t=e(`<div tabindex="-1" class="joomla-modal modal fade" aria-modal="true" role="dialog">
+<div class="modal-dialog modal-lg jviewport-width80">
+<div class="modal-content">
+<div class="modal-header">
+<h3 class="modal-title">Choose Item</h3>
+</div>
+<div class="modal-body jviewport-height60"><iframe class="iframe" src="`+o+`" name="Change Image" height="100%" width="100%"></iframe>
+</div>
+</div>
+</div>`).appendTo("body")[0];Joomla.initialiseModal(t,{isJoomla:!0}),t.addEventListener("hidden.bs.modal",function(i){e(t).remove()}),t.open()}e.fn[a.prototype.name]=function(){var o=arguments,t=o[0]?o[0]:null;return this.each(function(){var i=e(this);if(a.prototype[t]&&i.data(a.prototype.name)&&t!="initialize")i.data(a.prototype.name)[t].apply(i.data(a.prototype.name),Array.prototype.slice.call(o,1));else if(!t||e.isPlainObject(t)){var n=new a;a.prototype.initialize&&n.initialize.apply(n,e.merge([i],o)),i.data(a.prototype.name,n)}else e.error("Method "+t+" does not exist on jQuery."+a.name)})}})(jQuery);
