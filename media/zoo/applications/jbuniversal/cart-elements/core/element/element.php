@@ -1,5 +1,7 @@
 <?php
+
 use Joomla\String\StringHelper;
+
 /**
  * JBZoo Application
  *
@@ -18,7 +20,7 @@ use Joomla\String\StringHelper;
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Class Element
+ * Class JBCartElement
  */
 abstract class JBCartElement
 {
@@ -91,9 +93,10 @@ abstract class JBCartElement
 
     /**
      * Constructor
-     * @param App    $app
-     * @param string $type
-     * @param string $group
+     *
+     * @param   App     $app
+     * @param   string  $type
+     * @param   string  $group
      */
     public function __construct($app, $type, $group)
     {
@@ -120,11 +123,13 @@ abstract class JBCartElement
 
     /**
      * Set new config data
+     *
      * @param $config
      */
     public function setConfig($config)
     {
-        if (is_array($config)) {
+        if (is_array($config))
+        {
             $config = $this->app->data->create($config);
         }
 
@@ -151,13 +156,17 @@ abstract class JBCartElement
 
     /**
      * Set data through data array.
-     * @param array $data
+     *
+     * @param   array  $data
+     *
      * @return $this
      */
     public function bindData($data = array())
     {
-        if (!empty($data)) {
-            foreach ($data as $key => $value) {
+        if (!empty($data))
+        {
+            foreach ($data as $key => $value)
+            {
                 $this->set($key, $value);
             }
         }
@@ -167,14 +176,19 @@ abstract class JBCartElement
 
     /**
      * Gets the elements data
-     * @param      $key
-     * @param null $default
+     *
+     * @param         $key
+     * @param   null  $default
+     *
      * @return mixed
+     * @since 4.15.7
      */
-    public function get($key, $default = null)
+    public function get($key, $default = null): mixed
     {
         $result = $this->_data->get($key, $default);
-        if ($result === null) {
+
+        if ($result === null)
+        {
             $result = $default;
         }
 
@@ -183,8 +197,10 @@ abstract class JBCartElement
 
     /**
      * Sets the elements data.
+     *
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function set($key, $value)
@@ -205,7 +221,9 @@ abstract class JBCartElement
 
     /**
      * Get element layout path and use override if exists
-     * @param null|string $layout
+     *
+     * @param   null|string  $layout
+     *
      * @return string
      */
     public function getLayout($layout = null)
@@ -215,9 +233,12 @@ abstract class JBCartElement
         $group = $this->getElementGroup();
 
         // set default
-        if (empty($layout)) {
+        if (empty($layout))
+        {
             $layout = $type . '.php';
-        } else if (strpos($layout, '.php') === false) {
+        }
+        else if (strpos($layout, '.php') === false)
+        {
             $layout .= '.php';
         }
 
@@ -225,17 +246,20 @@ abstract class JBCartElement
         $layoutPath = $this->app->path->path("cart-elements:{$group}/{$type}/tmpl/{$layout}");
 
         // parent option
-        if (empty($layoutPath)) {
+        if (empty($layoutPath))
+        {
             $layoutPath = $this->app->path->path("cart-elements:{$group}/option/tmpl/{$layout}");
         }
 
         // parent group
-        if (empty($layoutPath)) {
+        if (empty($layoutPath))
+        {
             $layoutPath = $this->app->path->path("cart-elements:core/{$group}/tmpl/{$layout}");
         }
 
         // global
-        if (empty($layoutPath)) {
+        if (empty($layoutPath))
+        {
             $layoutPath = $this->app->path->path("cart-elements:core/element/tmpl/{$layout}");
         }
 
@@ -271,7 +295,8 @@ abstract class JBCartElement
 
     /**
      * Set related item object
-     * @param JBCartOrder $order
+     *
+     * @param   JBCartOrder  $order
      */
     public function setOrder(JBCartOrder $order)
     {
@@ -280,7 +305,9 @@ abstract class JBCartElement
 
     /**
      * Set related type object
-     * @param array $params
+     *
+     * @param   array  $params
+     *
      * @return bool
      */
     public function hasValue($params = array())
@@ -292,14 +319,17 @@ abstract class JBCartElement
 
     /**
      * Renders the element
-     * @param array $params
+     *
+     * @param   array  $params
+     *
      * @return mixed|string
      */
     public function render($params = array())
     {
         $paramLayout = $params->get('layout') ? $params->get('layout') . '.php' : null;
 
-        if ($layout = $this->getLayout($paramLayout)) {
+        if ($layout = $this->getLayout($paramLayout))
+        {
             return $this->renderLayout($layout, array(
                 'params' => $params,
                 'value'  => $this->get('value'),
@@ -311,15 +341,17 @@ abstract class JBCartElement
     }
 
     /**
-     * @param  string $layout
-     * @param  array  $vars
+     * @param   string  $layout
+     * @param   array   $vars
+     *
      * @return null|string
      */
     protected function _partial($layout, $vars = array())
     {
         $vars['order'] = $this->getOrder();
 
-        if ($layout = $this->getLayout($layout . '.php')) {
+        if ($layout = $this->getLayout($layout . '.php'))
+        {
             return self::renderLayout($layout, $vars);
         }
 
@@ -329,15 +361,19 @@ abstract class JBCartElement
 
     /**
      * Renders the element using template layout file
-     * @param string $__layout layouts template file
-     * @param array  $__args   layouts template file args
+     *
+     * @param   string  $__layout  layouts template file
+     * @param   array   $__args    layouts template file args
+     *
      * @return string
      */
     protected function renderLayout($__layout, $__args = array())
     {
         // init vars
-        if (is_array($__args)) {
-            foreach ($__args as $__var => $__value) {
+        if (is_array($__args))
+        {
+            foreach ($__args as $__var => $__value)
+            {
                 $$__var = $__value;
             }
         }
@@ -376,35 +412,41 @@ abstract class JBCartElement
     public function loadConfigAssets()
     {
         $this->app->path->register($this->app->path->path('helpers:fields'), 'fields');
+
         return $this;
     }
 
     /**
      * Register a callback function
+     *
      * @param $method
      */
     public function registerCallback($method)
     {
-        if (!in_array(strtolower($method), $this->_callbacks)) {
+        if (!in_array(strtolower($method), $this->_callbacks))
+        {
             $this->_callbacks[] = strtolower($method);
         }
     }
 
     /**
      * Execute elements callback function
-     * @param       $method
-     * @param array $args
+     *
+     * @param          $method
+     * @param   array  $args
      */
     public function callback($method, $args = array())
     {
         // try to call a elements class method
-        if (in_array(strtolower($method), $this->_callbacks) && method_exists($this, $method)) {
+        if (in_array(strtolower($method), $this->_callbacks) && method_exists($this, $method))
+        {
 
             // call method
             $res = call_user_func_array(array($this, $method), $args);
 
             // output if method returns a string
-            if (is_string($res)) {
+            if (is_string($res))
+            {
                 echo $res;
             }
         }
@@ -423,9 +465,11 @@ abstract class JBCartElement
         $params = array();
 
         $class = new ReflectionClass($this);
-        while ($class !== false) {
+        while ($class !== false)
+        {
             $xmlPath = preg_replace('#\.php$#i', '.xml', $class->getFileName());
-            if (file_exists($xmlPath)) {
+            if (file_exists($xmlPath))
+            {
                 $params[] = $xmlPath;
             }
 
@@ -440,12 +484,14 @@ abstract class JBCartElement
 
         // skip if there are no config files
         $params = array_filter($params);
-        if (empty($params)) {
+        if (empty($params))
+        {
             return null;
         }
 
         // add config xml files
-        foreach ($params as $xml) {
+        foreach ($params as $xml)
+        {
             $form->addXML($xml);
         }
 
@@ -459,7 +505,8 @@ abstract class JBCartElement
         $this->app->jbevent->fire($this, 'cart-element:configform', compact('form'));
 
         $fieldsPath = JPath::clean($this->getPath() . '/fields');
-        if (is_dir($fieldsPath)) {
+        if (is_dir($fieldsPath))
+        {
             $form->addElementPath($fieldsPath);
         }
 
@@ -468,35 +515,39 @@ abstract class JBCartElement
 
     /**
      * Get elements xml meta data
-     * @param null $key
+     *
+     * @param   null  $key
+     *
      * @return bool
      */
     public function getMetaData($key = null)
     {
 
-        if (!isset($this->_metaData)) {
+        if (!isset($this->_metaData))
+        {
             $data = array();
             $xml  = $this->loadXML();
 
-            if (!$xml) {
+            if (!$xml)
+            {
                 return false;
             }
 
-            $data['type']         = $xml->attributes()->type ? (string)$xml->attributes()->type : 'Unknown';
-            $data['group']        = $xml->attributes()->group ? (string)$xml->attributes()->group : 'Unknown';
-            $data['hidden']       = $xml->attributes()->hidden ? (string)$xml->attributes()->hidden : 'false';
-            $data['core']         = $xml->attributes()->core ? (string)$xml->attributes()->core : 'false';
-            $data['system-tmpl']  = $xml->attributes()->{'system-tmpl'} ? (string)$xml->attributes()->{'system-tmpl'} : 'false';
-            $data['trusted']      = $xml->attributes()->trusted ? (string)$xml->attributes()->trusted : 'false';
-            $data['orderable']    = $xml->attributes()->orderable ? (string)$xml->attributes()->orderable : 'false';
-            $data['name']         = JText::_((string)$xml->name);
-            $data['creationdate'] = $xml->creationDate ? (string)$xml->creationDate : 'Unknown';
-            $data['author']       = $xml->author ? (string)$xml->author : 'Unknown';
-            $data['copyright']    = (string)$xml->copyright;
-            $data['authorEmail']  = (string)$xml->authorEmail;
-            $data['authorUrl']    = (string)$xml->authorUrl;
-            $data['version']      = (string)$xml->version;
-            $data['description']  = JText::_((string)$xml->description);
+            $data['type']         = $xml->attributes()->type ? (string) $xml->attributes()->type : 'Unknown';
+            $data['group']        = $xml->attributes()->group ? (string) $xml->attributes()->group : 'Unknown';
+            $data['hidden']       = $xml->attributes()->hidden ? (string) $xml->attributes()->hidden : 'false';
+            $data['core']         = $xml->attributes()->core ? (string) $xml->attributes()->core : 'false';
+            $data['system-tmpl']  = $xml->attributes()->{'system-tmpl'} ? (string) $xml->attributes()->{'system-tmpl'} : 'false';
+            $data['trusted']      = $xml->attributes()->trusted ? (string) $xml->attributes()->trusted : 'false';
+            $data['orderable']    = $xml->attributes()->orderable ? (string) $xml->attributes()->orderable : 'false';
+            $data['name']         = JText::_((string) $xml->name);
+            $data['creationdate'] = $xml->creationDate ? (string) $xml->creationDate : 'Unknown';
+            $data['author']       = $xml->author ? (string) $xml->author : 'Unknown';
+            $data['copyright']    = (string) $xml->copyright;
+            $data['authorEmail']  = (string) $xml->authorEmail;
+            $data['authorUrl']    = (string) $xml->authorUrl;
+            $data['version']      = (string) $xml->version;
+            $data['description']  = JText::_((string) $xml->description);
 
             $this->_metaData = $this->app->data->create($data);
         }
@@ -510,7 +561,8 @@ abstract class JBCartElement
      */
     public function loadXML()
     {
-        if (!isset($this->_xmlData)) {
+        if (!isset($this->_xmlData))
+        {
 
             $type  = $this->getElementType();
             $group = $this->getElementGroup();
@@ -523,8 +575,10 @@ abstract class JBCartElement
 
     /**
      * Gets the controle name for given name
-     * @param      $name
-     * @param bool $array
+     *
+     * @param         $name
+     * @param   bool  $array
+     *
      * @return string
      */
     public function getControlName($name, $array = false)
@@ -534,7 +588,9 @@ abstract class JBCartElement
 
     /**
      * Check if element is accessible with users access rights
-     * @param null $user
+     *
+     * @param   null  $user
+     *
      * @return mixed
      */
     public function canAccess($user = null)
@@ -558,7 +614,8 @@ abstract class JBCartElement
     public function isSystemTmpl()
     {
         $systemTmpl = strtolower($this->getMetaData('system-tmpl'));
-        if ($systemTmpl == 'true') {
+        if ($systemTmpl == 'true')
+        {
             return true;
         }
 
@@ -572,7 +629,8 @@ abstract class JBCartElement
     public function isCore()
     {
         $core = strtolower($this->getMetaData('core'));
-        if ($core == 'true') {
+        if ($core == 'true')
+        {
             return true;
         }
 
@@ -586,7 +644,8 @@ abstract class JBCartElement
     public function isHidden()
     {
         $hidden = strtolower($this->getMetaData('hidden'));
-        if ($hidden == 'true' || $hidden == '1') {
+        if ($hidden == 'true' || $hidden == '1')
+        {
             return true;
         }
 
@@ -595,12 +654,15 @@ abstract class JBCartElement
 
     /**
      * Renders the element in submission
-     * @param array $params
+     *
+     * @param   array  $params
+     *
      * @return string|void
      */
     public function renderSubmission($params = array())
     {
-        if ($layout = $this->getLayout('submission.php')) {
+        if ($layout = $this->getLayout('submission.php'))
+        {
             return self::renderLayout($layout, array(
                 'params' => $params,
                 'value'  => $this->get('value'),
@@ -613,8 +675,10 @@ abstract class JBCartElement
 
     /**
      * Validates the submitted element
+     *
      * @param $value
      * @param $params
+     *
      * @return array
      */
     public function validateSubmission($value, $params)
@@ -625,7 +689,7 @@ abstract class JBCartElement
         return array(
             'value' => $this->app->validator
                 ->create('textfilter', array(
-                    'required' => (int)$params->get('required'),
+                    'required' => (int) $params->get('required'),
                     'trim'     => true,
                 ))
                 ->clean($value->get('value')),
@@ -639,9 +703,12 @@ abstract class JBCartElement
     {
         $name = $this->config->get('name');
 
-        if (empty($name)) {
+        if (empty($name))
+        {
             $retult = $this->getMetaData('name');
-        } else {
+        }
+        else
+        {
             $retult = JText::_($name);
         }
 
@@ -657,12 +724,13 @@ abstract class JBCartElement
     {
         return $this->app->data->create(array(
             'data'   => $this->data(),
-            'config' => (array)$this->config,
+            'config' => (array) $this->config,
         ));
     }
 
     /**
-     * @param null $default
+     * @param   null  $default
+     *
      * @return mixed
      */
     public function getDescription($default = null)
@@ -671,14 +739,16 @@ abstract class JBCartElement
     }
 
     /**
-     * @param bool $uniq
+     * @param   bool  $uniq
+     *
      * @return string
      */
     public function htmlId($uniq = false)
     {
         $id = 'jbcart-' . $this->identifier;
 
-        if ($uniq) {
+        if ($uniq)
+        {
             return $this->app->jbstring->getId($id);
         }
 
@@ -686,8 +756,9 @@ abstract class JBCartElement
     }
 
     /**
-     * @param string $methodName
-     * @param array  $params
+     * @param   string  $methodName
+     * @param   array   $params
+     *
      * @return mixed
      */
     public function getAjaxUrl($methodName = 'ajax', array $params = array())
@@ -703,6 +774,7 @@ abstract class JBCartElement
 
     /**
      * @param $attrs
+     *
      * @return mixed
      */
     protected function _attrs($attrs)
@@ -711,14 +783,14 @@ abstract class JBCartElement
     }
 
     /**
-     * @param string $positon
+     * @param   string  $positon
      */
     public function saveConfig($positon = JBCart::DEFAULT_POSITION)
     {
         $config = JBModelConfig::model();
         $list   = $config->getGroup('cart.' . $this->getElementGroup());
 
-        $list[$positon][$this->identifier] = (array)$this->config;
+        $list[$positon][$this->identifier] = (array) $this->config;
 
         $config->setGroup('cart.' . $this->getElementGroup(), $list);
     }

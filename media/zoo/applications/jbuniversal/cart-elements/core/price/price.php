@@ -1,5 +1,7 @@
 <?php
+
 use Joomla\String\StringHelper;
+
 /**
  * JBZoo Application
  *
@@ -124,11 +126,12 @@ abstract class JBCartElementPrice extends JBCartElement
     protected $_jbhtml;
 
     /**
+     * @param   App     $app
+     * @param   string  $type
+     * @param   string  $group
+     *
      * @todo args[4] $params ?
-     * Constructor
-     * @param App    $app
-     * @param string $type
-     * @param string $group
+     *       Constructor
      */
     public function __construct($app, $type, $group)
     {
@@ -145,7 +148,8 @@ abstract class JBCartElementPrice extends JBCartElement
      */
     public function getJBPrice()
     {
-        if (!$this->_jbprice instanceof ElementJBPrice) {
+        if (!$this->_jbprice instanceof ElementJBPrice)
+        {
             throw new JBCartElementPriceException('Item price is not set in ' . get_class($this));
         }
 
@@ -154,7 +158,9 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Set related price object.
-     * @param ElementJBPrice $object
+     *
+     * @param   ElementJBPrice  $object
+     *
      * @return $this
      */
     public function setJBPrice($object)
@@ -166,24 +172,29 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Set the variant key to which element belongs.
-     * @param int $key
+     *
+     * @param   int  $key
+     *
      * @return $this
      */
     public function setVariant($key)
     {
-        $this->variant = (int)$key;
+        $this->variant = (int) $key;
 
         return $this;
     }
 
     /**
      * Unique string for related price elements and his elements.
-     * @param string $hash
+     *
+     * @param   string  $hash
+     *
      * @return $this
      */
     public function setHash($hash)
     {
-        if ($this->hash === null) {
+        if ($this->hash === null)
+        {
             $this->hash = $hash;
         }
 
@@ -192,6 +203,7 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * @param $template
+     *
      * @return $this
      */
     public function setTemplate($template)
@@ -203,6 +215,7 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * @param $layout
+     *
      * @return $this
      */
     public function setLayout($layout)
@@ -213,26 +226,28 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param int $index
+     * @param   int  $index
+     *
      * @return $this
      */
     public function setIndex($index)
     {
-        if(is_numeric($index))
+        if (is_numeric($index))
         {
-            $this->index = (int)$index;
+            $this->index = (int) $index;
         }
 
         return $this;
     }
 
     /**
-     * @param  string $position
+     * @param   string  $position
+     *
      * @return $this
      */
     public function setPosition($position)
     {
-        if(is_string($position))
+        if (is_string($position))
         {
             $this->position = $position;
         }
@@ -241,7 +256,8 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param boolean $enable
+     * @param   boolean  $enable
+     *
      * @return $this
      */
     public function setCache($enable)
@@ -258,13 +274,13 @@ abstract class JBCartElementPrice extends JBCartElement
      */
     public function isBasic()
     {
-        return (bool)($this->variant === 0);
+        return (bool) ($this->variant === 0);
     }
 
     /**
-     * @todo Complete method
-     * Check if element is required.
      * @return bool
+     * @todo Complete method
+     *       Check if element is required.
      */
     public function isRequired()
     {
@@ -281,7 +297,9 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Check element id.
-     * @param  string $identifier
+     *
+     * @param   string  $identifier
+     *
      * @return bool
      */
     public function is($identifier)
@@ -301,7 +319,9 @@ abstract class JBCartElementPrice extends JBCartElement
     /**
      * Get an element from the price.
      * Will be created new instance of JBCartElementPrice.
-     * @param string $identifier Id of element
+     *
+     * @param   string  $identifier  Id of element
+     *
      * @return JBCartElement|mixed
      */
     public function getElement($identifier)
@@ -325,19 +345,22 @@ abstract class JBCartElementPrice extends JBCartElement
      */
     public function count()
     {
-        return count((array)$this->data());
+        return count((array) $this->data());
     }
 
     /**
      * Set data through data array.
-     * @param  array|string $data
-     * @param  string       $key Default key for $data. If data is not array.
+     *
+     * @param   array|string  $data
+     * @param   string        $key  Default key for $data. If data is not array.
+     *
      * @return $this
      */
     public function bindData($data = array(), $key = 'value')
     {
-        if (!is_array($data)) {
-            $data = array($key => (string)$data);
+        if (!is_array($data))
+        {
+            $data = array($key => (string) $data);
         }
 
         return parent::bindData($data);
@@ -354,7 +377,9 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Check if element has value.
-     * @param AppData|array $params
+     *
+     * @param   AppData|array  $params
+     *
      * @return bool
      */
     public function hasValue($params = array())
@@ -365,7 +390,8 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param  array $params
+     * @param   array  $params
+     *
      * @return bool
      */
     public function hasFilterValue($params = array())
@@ -384,7 +410,9 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Returns data when variant changes.
-     * @param AppData|array $params
+     *
+     * @param   AppData|array  $params
+     *
      * @return mixed
      */
     public function renderAjax($params = array())
@@ -393,8 +421,9 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param  string $html
-     * @param  array  $args
+     * @param   string  $html
+     * @param   array   $args
+     *
      * @return string
      * @throws ElementJBPriceException
      */
@@ -405,7 +434,9 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Get params for widget
-     * @param AppData|array $params
+     *
+     * @param   AppData|array  $params
+     *
      * @return mixed
      */
     public function interfaceParams($params = array())
@@ -415,15 +446,20 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Get elements value. If value not set trying to get it from basic variant.
-     * @param bool   $toString A string representation of the value.
-     * @param string $key      Array key.
-     * @param mixed  $default  Default value if data is empty.
-     * @return mixed|string|JBCartValue
+     *
+     * @param   bool    $toString  A string representation of the value.
+     * @param   string  $key       Array key.
+     * @param   mixed   $default   Default value if data is empty.
+     *
+     * @return mixed
+     * @since 4.15.7
      */
     public function getValue($toString = false, $key = 'value', $default = null)
     {
         $value = $this->get($key);
-        if ((StringHelper::strlen($value) === 0) && ($this->isCore()) && (!$this->isBasic())) {
+
+        if ((StringHelper::strlen($value) === 0) && ($this->isCore()) && (!$this->isBasic()))
+        {
             $value = $this->get('_basic', $default);
         }
 
@@ -472,8 +508,9 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param  string  $name
-     * @param  boolean $array
+     * @param   string   $name
+     * @param   boolean  $array
+     *
      * @return string
      */
     public function getControlName($name, $array = false)
@@ -482,8 +519,9 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param string $name
-     * @param bool   $array
+     * @param   string  $name
+     * @param   bool    $array
+     *
      * @return string
      */
     public function getRenderName($name, $array = false)
@@ -493,13 +531,16 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Get unique string for element
-     * @param bool $unique
+     *
+     * @param   bool  $unique
+     *
      * @return string
      */
     public function htmlId($unique = false)
     {
         $id = 'jbcart-' . $this->layout . '-' . $this->item_id . '-' . $this->identifier;
-        if ($unique) {
+        if ($unique)
+        {
             return $this->getId($id);
         }
 
@@ -516,13 +557,14 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @todo move to element _value
-     * Array of prices
      * @return array
+     * @todo move to element _value
+     *       Array of prices
      */
     protected function getPrices()
     {
-        if ($this->prices !== null) {
+        if ($this->prices !== null)
+        {
             return $this->prices;
         }
 
@@ -550,10 +592,11 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @todo Use helper
-     * @param string $value
-     * @param array  $symbols
+     * @param   string  $value
+     * @param   array   $symbols
+     *
      * @return mixed
+     * @todo Use helper
      */
     protected function clearSymbols($value, $symbols = array('%', '+', '-'))
     {
@@ -561,7 +604,8 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param string $prefix
+     * @param   string  $prefix
+     *
      * @return string
      */
     protected function getId($prefix = 'unique-')
@@ -571,14 +615,17 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Renders the element using template layout file
-     * @param string $__layout layouts template file
-     * @param array  $__args   layouts template file args
+     *
+     * @param   string  $__layout  layouts template file
+     * @param   array   $__args    layouts template file args
+     *
      * @return string
      */
     protected function renderEditLayout($__layout, $__args = array())
     {
         $html = parent::renderLayout($__layout, $__args);
-        if ($layout = $this->getLayout('_edit.php')) {
+        if ($layout = $this->getLayout('_edit.php'))
+        {
             $html = parent::renderLayout($layout, array(
                 'html' => $html
             ));
@@ -589,8 +636,10 @@ abstract class JBCartElementPrice extends JBCartElement
 
     /**
      * Renders the element using template layout file
-     * @param string $__layout layouts template file
-     * @param array  $__args   layouts template file args
+     *
+     * @param   string  $__layout  layouts template file
+     * @param   array   $__args    layouts template file args
+     *
      * @return string
      */
     protected function renderLayout($__layout, $__args = array())
@@ -601,18 +650,21 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param  array $assets
-     * @param string $method
+     * @param   array   $assets
+     * @param   string  $method
+     *
      * @return $this
      */
     protected function addToStorage($assets, $method = 'js')
     {
-        $assets = (array)$assets;
+        $assets = (array) $assets;
         $count  = count($assets);
 
         $this->app->jbassets->$method($assets);
-        if ($this->cache && $count) {
-            foreach ($assets as $path) {
+        if ($this->cache && $count)
+        {
+            foreach ($assets as $path)
+            {
                 $this->_addToStorage($path, $method);
             }
         }
@@ -621,9 +673,10 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @todo Use helper
-     * @param  string $file
+     * @param   string  $file
+     *
      * @return $this|JBCartElementPrice
+     * @todo Use helper
      */
     protected function less($file)
     {
@@ -631,9 +684,10 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @todo Use helper
-     * @param  string $file
+     * @param   string  $file
+     *
      * @return $this|JBCartElementPrice
+     * @todo Use helper
      */
     protected function js($file)
     {
@@ -641,9 +695,10 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @todo Use helper
-     * @param  string $file
+     * @param   string  $file
+     *
      * @return $this|JBCartElementPrice
+     * @todo Use helper
      */
     protected function css($file)
     {
@@ -651,7 +706,8 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param string $asset
+     * @param   string  $asset
+     *
      * @return $this
      * @throws JBCartElementPriceException
      */
@@ -663,8 +719,9 @@ abstract class JBCartElementPrice extends JBCartElement
     }
 
     /**
-     * @param  string $html
-     * @param  array  $args
+     * @param   string  $html
+     * @param   array   $args
+     *
      * @return string
      * @throws ElementJBPriceException
      */
