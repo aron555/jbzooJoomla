@@ -45,6 +45,10 @@ class BuilderAutoload
 
 	public static function loadHelperClasses()
 	{
+        if (Factory::getApplication()->input->get('option', 'com_sppagebuilder') !== 'com_sppagebuilder') {
+            return;
+        }
+
 		if (!class_exists('AddonsHelper'))
 		{
 			require_once JPATH_ROOT . '/administrator/components/com_sppagebuilder/editor/helpers/AddonsHelper.php';
