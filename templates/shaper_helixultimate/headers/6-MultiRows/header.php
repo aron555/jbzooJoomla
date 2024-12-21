@@ -97,6 +97,9 @@ $searchModule = Helper::getSearchModule();
 									<?php echo $menu->renderLogin(); ?>
 								<?php endif ?>
 							</div>
+
+                            <jdoc:include type="modules" name="top2" style="sp_xhtml" />
+
 						</div>
 					</div>
 				</div>
