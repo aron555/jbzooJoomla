@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * JBZoo Application
  *
@@ -13,7 +14,14 @@
  * @author     Denis Smetannikov <denis@jbzoo.com>
  */
 
+/**
+ * @var Registry $params
+ * @var object $module
+ */
+
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 // load config

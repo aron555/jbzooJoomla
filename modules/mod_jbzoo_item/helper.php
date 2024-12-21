@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * JBZoo Application
  *
@@ -14,6 +15,8 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_ADMINISTRATOR . '/components/com_zoo/config.php';
@@ -39,10 +42,10 @@ class JBModuleHelperItem extends JBModuleHelper
     protected $_items = null;
 
     /**
-     * @param JRegistry $params
-     * @param stdClass  $module
+     * @param Registry $params
+     * @param object $module
      */
-    public function __construct(JRegistry $params, $module)
+    public function __construct(Registry $params, object $module)
     {
         parent::__construct($params, $module);
 
@@ -52,7 +55,7 @@ class JBModuleHelperItem extends JBModuleHelper
     /**
      * Load module assets
      */
-    protected function _loadAssets()
+    protected function _loadAssets(): void
     {
         parent::_loadAssets();
 
@@ -68,7 +71,7 @@ class JBModuleHelperItem extends JBModuleHelper
     {
         if ($this->_isRemoveViewed()) {
             $this->_jbassets->widget('#' . $this->getModuleId(), 'JBZoo.Viewed', array(
-                'message'   => JText::_('JBZOO_MODITEM_RECENTLY_VIEWED_DELETE_HISTORY'),
+                'message' => JText::_('JBZOO_MODITEM_RECENTLY_VIEWED_DELETE_HISTORY'),
                 'url_clear' => $this->app->jbrouter->removeViewed()
             ));
         }
@@ -89,7 +92,7 @@ class JBModuleHelperItem extends JBModuleHelper
         $pathType = $this->app->path->path('mod_jbzoo_item:types/' . $fileType . '.php');
 
         $moduleType = JPath::clean($pathType);
-        $className  = self::TYPE_PREFIX . ucfirst($fileType);
+        $className = self::TYPE_PREFIX . ucfirst($fileType);
 
         if (JFile::exists($moduleType)) {
             require_once $moduleType;
@@ -141,7 +144,7 @@ class JBModuleHelperItem extends JBModuleHelper
     }
 
     /**
-     * @param null  $layout
+     * @param null $layout
      * @param array $vars
      * @return string
      */
