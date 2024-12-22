@@ -39,6 +39,7 @@ class JBModuleHelperBasket extends JBModuleHelper
      * Init Zoo
      * @param Registry $params
      * @param object $module
+     * @since 4.15.7
      */
     public function __construct(Registry $params, object $module)
     {

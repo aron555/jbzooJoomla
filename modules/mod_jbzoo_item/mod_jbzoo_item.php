@@ -1,5 +1,8 @@
 <?php
 declare(strict_types=1);
+
+use Joomla\Registry\Registry;
+
 /**
  * JBZoo Application
  *
@@ -20,8 +23,6 @@ declare(strict_types=1);
  */
 
 // no direct access
-use Joomla\Registry\Registry;
-
 defined('_JEXEC') or die('Restricted access');
 
 // load config

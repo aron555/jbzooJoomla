@@ -15,14 +15,12 @@ declare(strict_types=1);
  *
  */
 
-// no direct access
-
 /**
  * @var JRegistry $params
  * @var stdClass $module
  */
 
-
+// no direct access
 defined('_JEXEC') or die('Restricted access');
 
 // load helper
